@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<style>
+		div {
+			margin-bottom: 10px;
+		}
+
+		.red {
+			color: red;
+		}
+
+		.green {
+			color: green;
+		}
+	</style>
+	<title>Задача 4</title>
+</head>
+
+<body>
+	<h1>Задача 4</h1>
+	<p>“Рахунок у банку”. Вимоги:
+		<ol>
+			<li>Спочатку сума дорівнює 0грн. Змінити суму у гривнях можна або зарахуванням на рахунок, або зняттям.
+			</li>
+			<li>Сума автоматично переводиться у долари та євро (фіксований курс задається у data).</li>
+			<li>Можливість зарахувати суму (контролювати, щоб не була від’ємною)</li>
+			<li>Можливість зняти (щоб не можна зняти більше ніж є на рахунку)</li>
+			<li>При виконанні зняття і зарахування коштів вираховувати 3% від суми (відображати кількість відсотків
+				автоматично)</li>
+		</ol>
+		<p>При зміні суми :</p>
+		<ul>
+			<li>якщо було зняття, то суму відоражати червоним</li>
+			<li>якщо було зарахування, то суму відображати зеленим</li>
+			<li>якщо сума валюти менша за 100 то відображати червоним кольором, інакше - зеленим</li>
+		</ul>
+	</p>
+
+
+	<div id="app">
+		<div>Сумма на рахунку: <span :class="colorTotalAmount"> {{totalAmount}} грн.</span></div>
+		<div>
+			<label>
+				Зарахувати на рахунок
+				<input type="number" v-model.lazy.number="inputAmount" />
+			</label>
+			<button type="button" @click="addToTotalAmount()">Зарахувати</button>
+		</div>
+		<div>
+			<label>
+				Зняти з рахунку
+				<input type="number" v-model.lazy.number="withdrawalAmount" />
+			</label>
+			<button type="button" @click="subtractFromTotalAmount()">Зняти</button>
+		</div>
+		<div>Відсотки за обслуговування: {{percentOfAmount}} грн.</div>
+		<div>Сумма у доларах: <span :class="dollarClass"> ${{dollarAmount}}</span> </div>
+		<div>Сумма у євро: <span :class="euroClass"> €{{euroAmount}}</span> </div>
+		<hr>
+	</div>
+
+	<script>
+		const percentTax = 3;
+		const oneHundredPercent = 100;
+		const redColor = 'red';
+		const greenColor = 'green';
+
+		const {
+			createApp
+		} = Vue
+
+		createApp({
+			data() {
+				return {
+					totalAmount: 0,
+					inputAmount: null,
+					withdrawalAmount: null,
+					percentOfAmount: 0,
+					dollarRate: 42.45,
+					euroRate: 47.73,
+					colorTotalAmount: '',
+				}
+			},
+			methods: {
+				getPercentOfAmount(amount) {
+					return amount * percentTax / oneHundredPercent;
+				},
+				addToTotalAmount() {
+					if (this.inputAmount <= 0) alert("Введіть корректне значення!");
+					else {
+						this.percentOfAmount = this.getPercentOfAmount(this.inputAmount);
+						this.totalAmount = parseFloat((this.totalAmount + (this.inputAmount - this.percentOfAmount))
+							.toFixed(
+								2));
+						this.colorTotalAmount = greenColor;
+					}
+
+				},
+				subtractFromTotalAmount() {
+					if (this.withdrawalAmount <= 0) alert(
+						"Введіть корректне значення!");
+					else {
+						this.percentOfAmount = this.getPercentOfAmount(this.withdrawalAmount);
+						const withdrawalAmountWithPercent = this.withdrawalAmount + this.percentOfAmount;
+
+						if (withdrawalAmountWithPercent > this.totalAmount) alert(
+							"Сума зняття не може перевищувати баланс!");
+						else {
+							this.totalAmount = parseFloat((this.totalAmount - withdrawalAmountWithPercent)
+								.toFixed(
+									2));
+							this.colorTotalAmount = redColor;
+						}
+					}
+				}
+			},
+			computed: {
+				dollarAmount() {
+					return (this.totalAmount / this.dollarRate).toFixed(2);
+				},
+				dollarClass() {
+					return this.totalAmount / this.dollarRate < 100 ? redColor : greenColor;
+				},
+				euroAmount() {
+					return (this.totalAmount / this.euroRate).toFixed(2);
+				},
+				euroClass() {
+					return this.totalAmount / this.euroRate < 100 ? redColor : greenColor;
+				},
+			},
+
+		}).mount('#app')
+	</script>
+
+</body>
+
+</html>

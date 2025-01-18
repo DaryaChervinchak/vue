@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<title>Задача 1</title>
+</head>
+
+<body>
+	<h1>Задача 1</h1>
+
+	<p>Вводиться кількість пасажирів. Вивести:
+		<ul>
+			<li>скільки потрібно автобусів (кожен автобус на 20 місць)</li>
+			<li>скільки пляшок води (кожному пасажиру 2 пляшки)</li>
+			<li>скільки бутербродів (кожному пасажиру 3 бутерброди)</li>
+		</ul>
+	</p>
+
+	<div id="app">
+
+		<label>
+			Кількість пасажирів:
+			<input type="number" v-model.number="numberOfPassengers" />
+		</label>
+		<hr>
+		<div>Кількість автобусів: {{numberOfBusses}}</div>
+		<div>Кількість пляшок води: {{numberOfBottles}}</div>
+		<div>Кількість бутербродів: {{numberOfSandwiches}}</div>
+	</div>
+
+	<script>
+		const numberofPassengersInBus = 20;
+		const numberOfBottlesPerPassenger = 2;
+		const numberOfSandwichesPerPassenger = 3;
+		const {
+			createApp
+		} = Vue
+
+		createApp({
+			data() {
+				return {
+					numberOfPassengers: 0,
+				}
+			},
+			computed: {
+				numberOfBusses() {
+					return Math.ceil(this.numberOfPassengers / numberofPassengersInBus);
+				},
+				numberOfBottles() {
+					return this.numberOfPassengers * numberOfBottlesPerPassenger;
+				},
+				numberOfSandwiches() {
+					return this.numberOfPassengers * numberOfSandwichesPerPassenger;
+				}
+			},
+		}).mount('#app')
+	</script>
+</body>
+
+</html>

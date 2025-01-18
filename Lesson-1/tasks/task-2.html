@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<title>Задача 2</title>
+</head>
+
+<body>
+	<h1>Задача 2</h1>
+
+	<p>Вводиться номер місяця. Автоматично виводити рекомендований одяг (зима – пальто, літо – шорти ….). Також
+		автоматично виводити зображення з відповідним зображенням лісу (зима – ліс зі снігом, осінь – жовтий ліс,
+		…).</p>
+
+	<div id="app">
+
+		<label>
+			Номер місяця:
+			<input type="number" v-model.lazy="monthNumber" @change="findSeason()" />
+		</label>
+		<hr>
+		<div>Рекомендований одяг: {{clothing}}</div>
+		<img :src="imageUrl" width="200">
+	</div>
+
+	<script>
+		const seasonsList = [{
+				name: 'winter',
+				clothing: 'Шуба',
+				image: 'https://tickikids.ams3.cdn.digitaloceanspaces.com/z1.cache/gallery/activities/8801/image_5aa550de8b73b9.22272788.jpg',
+			},
+			{
+				name: 'spring',
+				clothing: 'Куртка',
+				image: 'https://imglife.pravda.com.ua/images/doc/5/8/58ba14c-niderlandy-1.jpg'
+			},
+			{
+				name: 'summer',
+				clothing: 'Футболка',
+				image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgQXDmFAhjKKL-lorgSN-ZPn-vIoD7seWsIaPpHLUezBUlQ_lYo5murTbjIoeZk_4lR4RyfOV7oKDoO2qtyOIRfxS9oNk6cNuNNY-1VbyJSBgt1TZcvP_Hp6Ua66WbNnChTI6htmppl9OfG/s1600/1.jpeg'
+			},
+			{
+				name: 'fall',
+				clothing: 'Пальто',
+				image: 'https://artside.com.ua/home/catalog/product22367/35315.jpg'
+			}
+		];
+
+
+		const {
+			createApp
+		} = Vue
+
+		createApp({
+			data() {
+				return {
+					numberOfMonth: null,
+					clothing: null,
+					imageUrl: null,
+				}
+			},
+			methods: {
+				findSeason() {
+					const nameOfSeason = this.nameOfSeason;
+					const season = seasonsList.find(season => season.name === nameOfSeason);
+					this.clothing = season.clothing;
+					this.imageUrl = season.image;
+				}
+			},
+			computed: {
+				monthNumber: {
+					get() {
+						return this.numberOfMonth
+					},
+					set(newMonthNumber) {
+						if (newMonthNumber >= 1 && newMonthNumber <= 12) {
+							this.numberOfMonth = newMonthNumber;
+						} else
+							return alert('Введіть корректне значення');
+					}
+				},
+				nameOfSeason() {
+					switch (this.numberOfMonth) {
+						case 1:
+						case 2:
+						case 12:
+							return 'winter';
+						case 3:
+						case 4:
+						case 5:
+							return 'spring';
+						case 6:
+						case 7:
+						case 8:
+							return 'summer';
+						case 9:
+						case 10:
+						case 11:
+							return 'fall';
+					}
+				},
+
+			},
+
+		}).mount('#app')
+	</script>
+
+</body>
+
+</html>
