@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<title>Задача 4</title>
+</head>
+
+<body>
+	<h1>Задача 4</h1>
+	<p>Вивести список як маркований список з елементами у форматі (name: salary).</p>
+
+	<div id="app">
+		<ul>
+			<li v-for="worker in workersList2" :key="worker.id">{{worker.name}}: {{worker.salary}}</li>
+		</ul>
+	</div>
+
+	<script>
+		const {
+			createApp
+		} = Vue
+
+		const workersList2 = [{
+				id: '111',
+				name: 'Іванов',
+				salary: 10000,
+			},
+			{
+				id: '112',
+				name: 'Петров',
+				salary: 20000,
+			},
+			{
+				id: '113',
+				name: 'Сидоров',
+				salary: 50000,
+			},
+		];
+
+		createApp({
+			computed: {
+				workersList2() {
+					return workersList2;
+				}
+			},
+
+		}).mount('#app')
+	</script>
+
+</body>
+
+</html>

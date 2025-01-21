@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<style>
+		.dish {
+			display: flex;
+			justify-content: space-between;
+			gap: 20;
+			border: 1px solid black;
+		}
+
+		.dish:not(:last-child) {
+			margin-bottom: 5px;
+		}
+	</style>
+	<title>Задача 6</title>
+</head>
+
+<body>
+	<h1>Задача 6</h1>
+	<p>На кухню поступають замовлення. Спочатку ми додаємо їх у список “Очікують на виконання”, якщо повар береться
+		робити — замовлення переходить у список “Виконуються”, якщо замовлення виконано — переходить у список “Готові до
+		виносу”. Якщо натиснути на “Подано” - страва зникає з таблиці.
+	</p>
+
+	<div id="app">
+		<label>
+			Нова замовлена страва:
+			<input type="text" v-model.lazy.trim="newDish" />
+		</label>
+		<button type="button" :disabled="!isNotEmptyNewDish" @click="addNewDish">Додати</button>
+
+
+		<table border="1" v-show="isOrder">
+			<tr>
+				<th>Очікують на виконання</th>
+				<th>Виконуються</th>
+				<th>Подано</th>
+			</tr>
+			<tr>
+				<td width="250">
+					<div class="dish" v-for="(waitingDish, index) in waitingList" :key="waitingDish.id">
+						<div class="dish__title">{{waitingDish.title}}</div>
+						<button class="dish__button" type="button" @click="moveDishToProcessingList(index)">Готувати</button>
+					</div>
+				</td>
+				<td width="250">
+					<div class="dish" v-for="(processingDish, index) in processingList" :key="processingDish.id">
+						<div class="dish__title">{{processingDish.title}}</div>
+						<button class="dish__button" type="button"
+							@click="moveDishToCompletedList(index)">Приготовлено</button>
+					</div>
+				</td>
+				<td width="250">
+					<div class="dish" v-for="(completedDish, index) in completedList" :key="completedDish.id">
+						<div class="dish__title">{{completedDish.title}}</div>
+						<button class="dish__button" type="button" @click="serveDish(index)">Подано</button>
+					</div>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+
+	<script>
+		const {
+			createApp
+		} = Vue
+
+		createApp({
+			data() {
+				return {
+					newDish: null,
+					waitingList: [],
+					processingList: [],
+					completedList: [],
+				}
+			},
+			methods: {
+				addNewDish() {
+					this.waitingList.push({
+						id: new Date().getTime(),
+						title: this.newDish
+					})
+					this.newDish = null;
+				},
+				moveDishToProcessingList(index) {
+					const removedDish = this.waitingList.splice(index, 1)[0];
+					this.processingList.push(removedDish);
+				},
+				moveDishToCompletedList(index) {
+					const removedDish = this.processingList.splice(index, 1)[0];
+					this.completedList.push(removedDish);
+				},
+				serveDish(index) {
+					const removedDish = this.completedList.splice(index, 1)[0];
+				}
+			},
+			computed: {
+				isNotEmptyNewDish() {
+					return this.newDish;
+				},
+				isOrder() {
+					return this.waitingList.length || this.processingList.length || this.completedList.length;
+				}
+			}
+
+		}).mount('#app')
+	</script>
+
+
+</body>
+
+</html>

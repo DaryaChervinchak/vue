@@ -56,7 +56,7 @@
 				Зняти з рахунку
 				<input type="number" v-model.lazy.number="withdrawalAmount" />
 			</label>
-			<button type="button" @click="subtractFromTotalAmount()">Зняти</button>
+			<button type="button" @click="subtractFromTotalAmount">Зняти</button>
 		</div>
 		<div>Відсотки за обслуговування: {{percentOfAmount}} грн.</div>
 		<div>Сумма у доларах: <span :class="dollarClass"> ${{dollarAmount}}</span> </div>

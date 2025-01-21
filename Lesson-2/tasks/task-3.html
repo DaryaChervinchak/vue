@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<style>
+		.border-red {
+			border: 4px solid red;
+		}
+
+		.border-green {
+			border: 4px solid green;
+		}
+
+		.border-transparent {
+			border: 4px solid transparent;
+		}
+	</style>
+	<title>Задача 3</title>
+</head>
+
+<body>
+	<h1>Задача 3</h1>
+
+	<p>Елемент тренажера англійської. Виводимо зображення елемента і слово. Користувач вводить відповідь. Якщо
+		вірно – відтворюємо фразу «Добре. Молодець!» (і додаємо зелену рамку до елемента), якщо ні - то відтворюємо
+		фразу «Невірно, спробуйте ще раз» (і додаємо червону рамку).
+	</p>
+
+
+	<div id="app">
+
+		<img :class="borderClass" :src="randomWordImageUrl" width="350">
+
+		<p>{{randomWordInEnglish}}</p>
+
+		<label>
+			Ваш переклад:
+			<input type="text" v-model.lazy="worldInUkrainian" />
+		</label>
+		<div v-show="isInputWorld">
+			<div v-if="correctWorldInUkrainian">Добре. Молодець!</div>
+			<div v-else>Невірно, спробуйте ще раз.</div>
+		</div>
+	</div>
+
+	<script>
+		const worldsList = [{
+				worldInEnglish: 'cat',
+				worldInUkrainian: 'кіт',
+				imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIiZJcT8fUAUiAlhKet7_vCAWzHjqqnuLI7Q&s'
+			},
+			{
+				worldInEnglish: 'dog',
+				worldInUkrainian: 'собака',
+				imageUrl: 'https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/475B/production/_98776281_gettyimages-521697453.jpg.webp'
+			},
+			{
+				worldInEnglish: 'parrot',
+				worldInUkrainian: 'папуга',
+				imageUrl: 'https://tut-cikavo.com/images/4_new/parrot.jpg'
+			}
+		]
+		const borderRed = 'border-red';
+		const borderGreen = 'border-green';
+		const {
+			createApp
+		} = Vue
+
+		createApp({
+			data() {
+				return {
+					randomNumber: null,
+					word: this.randomWord(),
+					worldInUkrainian: null
+				}
+			},
+			methods: {
+				randomWord() {
+					const randIndex = Math.floor(Math.random() * worldsList.length);
+					return worldsList[randIndex];
+				}
+			},
+			computed: {
+				randomWordImageUrl() {
+					return this.word.imageUrl;
+				},
+				randomWordInEnglish() {
+					return this.word.worldInEnglish;
+				},
+				randomInUkrainian() {
+					return this.word.worldInUkrainian;
+				},
+				isInputWorld() {
+					return this.worldInUkrainian;
+				},
+				correctWorldInUkrainian() {
+					return this.worldInUkrainian === this.word.worldInUkrainian;
+				},
+				borderClass() {
+					if (this.isInputWorld) {
+						return this.correctWorldInUkrainian ? borderGreen : borderRed;
+					}
+					return 'border-transparent';
+				}
+			},
+		}).mount('#app')
+	</script>
+
+</body>
+
+</html>

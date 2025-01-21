@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<style>
+		.plane {
+			position: relative;
+			width: 500px;
+			height: 400px;
+		}
+
+		.plane__bg img {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: -1;
+			object-fit: cover;
+			opacity: 0.4;
+		}
+	</style>
+	<title>Задача 2</title>
+</head>
+
+<body>
+	<h1>Задача 2</h1>
+
+	<p>З випадаючого списку вибираємо клас квитка у літаку. Якщо:
+		<ol>
+			<li>бізнес - виводимо елементи для вибору газети та коньяку (якщо вибрано коньяк, то запропонувати
+				закуску (так/ні)), на фоні зображення бізнес кают </li>
+			<li>економ – виводимо елементи для вибору типу пива і чипсів, на фоні хмарки.</li>
+		</ol>
+	</p>
+
+	<div id="app">
+		<select v-model="ticketClassName">
+			<option value="" disabled selected>Виберіть клас квитка</option>
+			<option value="business">Бізнес</option>
+			<option value="economy">Економ</option>
+		</select>
+		<hr>
+		<template v-if="isSelectedTicketClass">
+			<div class="plane">
+				<div class="plane__bg">
+					<img :src="bgUrl" alt="Літак">
+				</div>
+				<template v-if="isTicketClassBussiness">
+					<h2>Виберіть газету:</h2>
+					<select>
+						<option value="newspaper-one">Газета 1</option>
+						<option value="newspaper-two">Газета 2</option>
+					</select>
+					<h2>Виберіть коньяк:</h2>
+					<select v-model="cognacName">
+						<option value="cognac-one">Коньяк 1</option>
+						<option value="cognac-two">Коньяк 2</option>
+					</select>
+					<template v-if="isSelectedCognacName">
+						<h2>Бажаєте закуску?</h2>
+						<select v-model="snack">
+							<option value="yes">Так</option>
+							<option value="no">Ні</option>
+						</select>
+					</template>
+				</template>
+				<template v-else>
+					<h2>Виберіть пиво:</h2>
+					<select>
+						<option value="beer-one">Пиво 1</option>
+						<option value="beer-two">Пиво 2</option>
+					</select>
+					<h2>Виберіть чіпси:</h2>
+					<select>
+						<option value="chips-one">Чіпси 1</option>
+						<option value="chips-two">Чіпси 2</option>
+					</select>
+				</template>
+			</div>
+		</template>
+	</div>
+
+	<script>
+		const {
+			createApp
+		} = Vue
+
+		const bussinesBgUrl =
+			'https://wezom.com.ua/Media/filemanager/blog/lychshie-chastnie-samoleti/original/EIDx6FphNXjvgDBUXhuerDtQcFmah5TgHfW93Bmg.jpg';
+		const economyBgUrl =
+			'https://dingo.com.ua/source/sunset/044.jpg';
+
+		createApp({
+			data() {
+				return {
+					ticketClassName: null,
+					cognacName: null,
+				}
+			},
+			computed: {
+				isSelectedTicketClass() {
+					return this.ticketClassName;
+				},
+				isTicketClassBussiness() {
+					return this.ticketClassName === 'business';
+				},
+				isSelectedCognacName() {
+					return this.cognacName;
+				},
+				bgUrl() {
+					return this.isTicketClassBussiness ? bussinesBgUrl : economyBgUrl;
+				}
+			},
+
+		}).mount('#app')
+	</script>
+
+</body>
+
+</html>

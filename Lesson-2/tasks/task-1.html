@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<style>
+		.blue {
+			color: blue;
+		}
+
+		.red {
+			color: red;
+		}
+	</style>
+	<title>Задача 1</title>
+</head>
+
+<body>
+	<h1>Задача 1</h1>
+
+	<p>Вводимо логін і пароль. Якщо логін вірний відображаємо смайл. Якщо ні, то:
+		<ol>
+			<li>якщо логін = Іван – колір повідомлення про помилку синій</li>
+			<li>якщо хтось інший, то колір повідомлення червоний</li>
+		</ol>
+	</p>
+
+	<div id="app">
+
+		<label>
+			Логін:
+			<input type="text" v-model.lazy="userLogin" />
+		</label>
+		<label>
+			Пароль:
+			<input type="text" v-model.lazy="userPassword" />
+		</label>
+		<button type="button">Go</button>
+
+		<template v-if="isNotEmptyData">
+			<div v-if="isCorrectData">&#128512;</div>
+			<div :class="textColor" v-else>Введіть корректні дані!</div>
+		</template>
+	</div>
+
+	<script>
+		const usersList = [{
+				login: 'admin',
+				password: '1234'
+			},
+			{
+				login: 'author',
+				password: '5678'
+			}, {
+				login: 'editor',
+				password: '8564'
+			}
+		]
+		const {
+			createApp
+		} = Vue
+
+		createApp({
+			data() {
+				return {
+					userLogin: null,
+					userPassword: null
+				}
+			},
+			computed: {
+				isNotEmptyData() {
+					return this.userLogin && this.userPassword;
+				},
+				isCorrectData() {
+					return usersList.some(user => user.login === this.userLogin && user.password === this
+						.userPassword);
+				},
+				textColor() {
+					let textColor;
+					textColor = this.userLogin === "Іван" ? 'blue' : 'red';
+					return textColor;
+				}
+			},
+		}).mount('#app')
+	</script>
+</body>
+
+</html>
