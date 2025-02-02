@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<style>
+		.board__body {
+			display: flex;
+			gap: 30px;
+			align-items: flex-end;
+		}
+
+		.board__item {
+			display: flex;
+			gap: 50px;
+			max-width: 450px;
+			justify-content: space-between;
+		}
+
+		.board__item:not(:last-child) {
+			margin-bottom: 10px;
+		}
+	</style>
+	<title>Задача 2</title>
+</head>
+
+<body>
+	<h1>Задача 2</h1>
+
+	<p>Пари для танців. Поступово вибираємо хлопця, дівчину і додаємо у обрані пари. Пару можна видалити. Поки не вибрано
+		хлопця і дівчину кнопка «Додати» заблокована. Якщо не вистачає хлопців або дівчат вибір також блокується.
+	</p>
+
+	<div id="app">
+		<div class="board">
+			<div class="board__body">
+				<div class="board__column">
+					<h2 class="board__title">Хлопці</h2>
+					<select :disabled="emptySelect" v-model="selectedBoy" class="board__select">
+						<option v-for="(boy, index) in boysList" :key="boy.id" :value="boy" class="board__option">
+							{{boy.name}}
+						</option>
+					</select>
+				</div>
+				<div class=" board__column">
+					<h2 class="board__title">Дівчата</h2>
+					<select :disabled="emptySelect" v-model="selectedGirl" class="board__select">
+						<option v-for="(girl, index) in girlsList" :key="girl.id" :value="girl" class="board__option">
+							{{girl.name}}
+						</option>
+					</select>
+				</div>
+				<div class="board__column">
+					<button :disabled="!selectedPair" @click="addPair" type="button" class="board__button">Додати</button>
+				</div>
+			</div>
+			<div v-show="pairsList.length" class="board__inner">
+				<h2 class="board__title">Обрані пари</h2>
+				<ul class="board__list">
+					<li v-for="pair in pairsList" :key="pair.id" class="board__item">
+						<div class="board__pair">{{pair.boy.name}} - {{pair.girl.name}}</div>
+						<button @click="deletePair(pair.id)" type="button" class="board__buton">Видалити</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+		const {
+			createApp
+		} = Vue
+
+		createApp({
+			data() {
+				return {
+					selectedBoy: null,
+					selectedGirl: null,
+					boysList: [{
+							id: 1,
+							name: 'Pavlo'
+						},
+						{
+							id: 2,
+							name: 'Yura'
+						},
+
+						{
+							id: 3,
+							name: 'Dmitro'
+						}
+					],
+					girlsList: [{
+							id: 1,
+							name: 'Inna'
+						},
+						{
+							id: 2,
+							name: 'Lyudmila'
+						},
+						{
+							id: 3,
+							name: 'Nastya'
+						}, {
+							id: 4,
+							name: 'Victoria'
+						}
+					],
+					pairsList: [],
+				}
+			},
+			methods: {
+				addPair() {
+					this.pairsList.push({
+						id: new Date().getTime(),
+						girl: this.selectedGirl,
+						boy: this.selectedBoy,
+					})
+					this.girlsList = this.girlsList.filter(girl => girl.id !== this.selectedGirl.id);
+					this.boysList = this.boysList.filter(boy => boy.id !== this.selectedBoy.id);
+					this.selectedBoy = null;
+					this.selectedGirl = null;
+				},
+				deletePair(pairId) {
+					const pair = this.pairsList.find(pair => pair.id === pairId);
+					this.pairsList = this.pairsList.filter(pair => pair.id !== pairId);
+					this.girlsList.push(pair.girl);
+					this.boysList.push(pair.boy);
+				}
+			},
+			computed: {
+				selectedPair() {
+					return this.selectedBoy && this.selectedGirl;
+				},
+				emptySelect() {
+					return this.boysList.length === 0 || this.girlsList.length === 0;
+				}
+			},
+
+		}).mount('#app')
+	</script>
+
+</body>
+
+</html>

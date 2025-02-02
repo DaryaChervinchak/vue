@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<style>
+		.game__body {
+			display: flex;
+			gap: 20px;
+		}
+
+		.game__item {
+			padding: 5px;
+			list-style: none;
+			border: 1px solid transparent;
+			cursor: pointer;
+		}
+
+		.selected {
+			border: 1px solid blue;
+		}
+
+		.error {
+			border: 1px solid red;
+		}
+	</style>
+	<title>Задача 1</title>
+</head>
+
+<body>
+	<h1>Задача 1</h1>
+	<p>Перекладач. Користувачу виводять змішані картки з словами на англійській і українській мові. Користувач
+		поступово клікає на картки (виділяємо синьою рамкою). Якщо знайдено правильні пари карток, що відповідають
+		одному слову, то видаляємо ці картки. Інакше - виділяємо червоною рамкою і через секунду забираємо рамку.
+	</p>
+
+	<div id="app">
+		<h1>Знайдіть пари слів</h1>
+		<div class="game">
+			<div v-if="!isEmptyLists" class="game__body">
+				<ul class="game__list">
+					<li v-for="(word) in shuffleWordsListUA" :key="word.id"
+						:class="{selected: word.isSelected, error:word.isError}"
+						@click="onSelectedWordInList(word, shuffleWordsListUA)" class="game__item">{{word.en}}
+					</li>
+				</ul>
+				<ul class="game__list">
+					<li v-for="(word) in shuffleWordsListEN" :key="word.id"
+						:class="{selected: word.isSelected,error:word.isError}"
+						@click="onSelectedWordInList(word, shuffleWordsListEN)" class="game__item">
+						{{word.ua}}</li>
+				</ul>
+			</div>
+			<div v-else class="game__footer">Вітаю!</div>
+		</div>
+	</div>
+
+	<script>
+		const words = [{
+				id: 1,
+				en: 'table',
+				ua: 'стіл',
+				isSelected: false,
+				isError: false,
+			},
+			{
+				id: 2,
+				en: 'car',
+				ua: 'автомобіль',
+				isSelected: false,
+				isError: false,
+			}, {
+				id: 3,
+				en: 'bus',
+				ua: 'автобус',
+				isSelected: false,
+				isError: false,
+			},
+			{
+				id: 4,
+				en: 'man',
+				ua: 'людина',
+				isSelected: false,
+				isError: false,
+			},
+			{
+				id: 5,
+				en: 'boy',
+				ua: 'хлопець',
+				isSelected: false,
+				isError: false,
+			},
+		]
+		const {
+			createApp
+		} = Vue
+
+		createApp({
+			data() {
+				return {
+					shuffleWordsListUA: this.shuffleWords(),
+					shuffleWordsListEN: this.shuffleWords(),
+					selectedWordInListUA: null,
+					selectedWordInListEN: null,
+				}
+			},
+			methods: {
+				shuffleWords() {
+					let shuffleWordsList = JSON.parse(JSON.stringify(words));
+
+					for (let i = shuffleWordsList.length - 1; i > 0; i--) {
+						let j = Math.floor(Math.random() * (i + 1));
+						[shuffleWordsList[i], shuffleWordsList[j]] = [shuffleWordsList[j], shuffleWordsList[i]];
+					}
+					return shuffleWordsList;
+				},
+
+				onSelectedWordInList(word, wordsList) {
+					if (wordsList === this.shuffleWordsListUA) {
+						if (this.selectedWordInListUA) {
+							this.selectedWordInListUA.isSelected = false;
+						}
+						this.selectedWordInListUA = word;
+						this.selectedWordInListUA.isSelected = true;
+					} else {
+						if (this.selectedWordInListEN) {
+							this.selectedWordInListEN.isSelected = false;
+						}
+						this.selectedWordInListEN = word;
+						this.selectedWordInListEN.isSelected = true;
+					}
+
+					if (this.selectedWordInListUA && this.selectedWordInListEN) {
+
+						if (this.selectedWordInListUA.id === this.selectedWordInListEN.id) {
+							const idSelectedWord = this.selectedWordInListUA.id;
+
+							this.shuffleWordsListUA = this.shuffleWordsListUA.filter(word => word.id !== idSelectedWord);
+							this.shuffleWordsListEN = this.shuffleWordsListEN.filter(word => word.id !== idSelectedWord);
+							this.selectedWordInListUA = null;
+							this.selectedWordInListEN = null;
+						} else {
+							this.selectedWordInListUA.isError = true;
+							this.selectedWordInListEN.isError = true;
+							setTimeout(() => {
+								this.selectedWordInListUA.isError = false;
+								this.selectedWordInListEN.isError = false;
+								this.selectedWordInListUA.isSelected = false;
+								this.selectedWordInListEN.isSelected = false;
+								this.selectedWordInListUA = null;
+								this.selectedWordInListEN = null;
+							}, 1000);
+						}
+
+					}
+				},
+			},
+			computed: {
+				isEmptyLists() {
+					return this.shuffleWordsListUA.length === 0 && this.shuffleWordsListEN.length === 0;
+				}
+			},
+		}).mount('#app')
+	</script>
+</body>
+
+</html>

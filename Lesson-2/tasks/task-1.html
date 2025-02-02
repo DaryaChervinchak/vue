@@ -37,7 +37,7 @@
 			Пароль:
 			<input type="text" v-model.lazy="userPassword" />
 		</label>
-		<button type="button">Go</button>
+		<button type="button" @click="isCorrectData">Go</button>
 
 		<template v-if="isNotEmptyData">
 			<div v-if="isCorrectData">&#128512;</div>
